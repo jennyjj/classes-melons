@@ -1,5 +1,5 @@
 """Classes for melon orders."""
-
+import random
 
 class AbstractMelonOrder(object):
     """An over-arching melon class"""
@@ -30,8 +30,7 @@ class AbstractMelonOrder(object):
         if self.species == "Christmas melon":
             base_price = 7.50
         else:
-            base_price = 5
-
+            base_price = int(self.get_base_price())
 
         if self.order_type == "international" and self.qty < 10:
             total = ((1 + self.tax) * self.qty * base_price) + 3
@@ -39,9 +38,14 @@ class AbstractMelonOrder(object):
             total = self.qty * base_price
         else:
             total = (1 + self.tax) * self.qty * base_price
+        return round(total, 2)
 
-        return total
+    def get_base_price(self):
+        """Randomly chooses a base price."""
 
+        base_price = random.randint(5, 9)   
+        print base_price
+        return base_price 
 
 class DomesticMelonOrder(AbstractMelonOrder):
     """A melon order within the USA."""
@@ -59,27 +63,26 @@ class InternationalMelonOrder(AbstractMelonOrder):
 
         super(InternationalMelonOrder, self).__init__(
             species, qty, tax=.17, order_type="international")
-        
         self.country_code = country_code
-
 
     def get_country_code(self):
         """Return the country code."""
 
         return self.country_code
 
+
 class GovernmentMelonOrder(AbstractMelonOrder):
     """A US Government order"""
 
-
-    def __init__(self, species, qty, passed_inspection=False):
+    def __init__(self, species, qty):
         """Initialize domestic melon order attributes."""
-        super(GovernmentMelonOrder, self).__init__(species, qty, order_type="government")
+        super(GovernmentMelonOrder, self).__init__(species, qty)
+        self.order_type = "government"
+        self.passed_inspection = False
 
-        self.passed_inspection = passed_inspection
+    def mark_inspection(self, passed):
+        """Marks if the melon has been inspected (user gives True or False)."""
+            self.passed_inspection = passed
 
-    def mark_inspection(self):
-        """Marks the melon passed inspection."""
-            
-        self.passed_inspection = True
+
 
